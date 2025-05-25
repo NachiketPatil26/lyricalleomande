@@ -1,0 +1,246 @@
+/* Custom Tailwind Colors */
+:root {
+    --teal-default: #06837f;
+    --teal-100: #011a19;
+    --teal-200: #023533;
+    --teal-300: #044f4c;
+    --teal-400: #056966;
+    --teal-500: #06837f;
+    --teal-600: #0acbc4;
+    --teal-700: #2af5ee;
+    --teal-800: #71f8f4;
+    --teal-900: #b8fcf9;
+    
+    --robin-egg-blue-default: #02cecb;
+    --robin-egg-blue-100: #002929;
+    --robin-egg-blue-200: #015351;
+    --robin-egg-blue-300: #017c7a;
+    --robin-egg-blue-400: #02a6a3;
+    --robin-egg-blue-500: #02cecb;
+    --robin-egg-blue-600: #11fdf9;
+    --robin-egg-blue-700: #4cfdfa;
+    --robin-egg-blue-800: #88fefc;
+    --robin-egg-blue-900: #c3fefd;
+    
+    --celeste-default: #b4ffff;
+    --celeste-100: #005757;
+    --celeste-200: #00adad;
+    --celeste-300: #05ffff;
+    --celeste-400: #5cffff;
+    --celeste-500: #b4ffff;
+    --celeste-600: #c2ffff;
+    --celeste-700: #d1ffff;
+    --celeste-800: #e0ffff;
+    --celeste-900: #f0ffff;
+    
+    --school-bus-yellow-default: #fed811;
+    --school-bus-yellow-100: #362d00;
+    --school-bus-yellow-200: #6c5a01;
+    --school-bus-yellow-300: #a18701;
+    --school-bus-yellow-400: #d7b301;
+    --school-bus-yellow-500: #fed811;
+    --school-bus-yellow-600: #fede40;
+    --school-bus-yellow-700: #fee770;
+    --school-bus-yellow-800: #ffefa0;
+    --school-bus-yellow-900: #fff7cf;
+    
+    --mikado-yellow-default: #fdc100;
+    --mikado-yellow-100: #332700;
+    --mikado-yellow-200: #664e00;
+    --mikado-yellow-300: #997500;
+    --mikado-yellow-400: #cc9c00;
+    --mikado-yellow-500: #fdc100;
+    --mikado-yellow-600: #ffcf33;
+    --mikado-yellow-700: #ffdb66;
+    --mikado-yellow-800: #ffe799;
+    --mikado-yellow-900: #fff3cc;
+}
+
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    /* background: linear-gradient(to bottom, #044f4c, #011a19); */ /* Teal gradient background REMOVED */
+    background-color: #000000; /* Added a fallback black background */
+    overflow-x: hidden;
+}
+
+/* Apply Tailwind colors to classes */
+.bg-teal-900 {
+    background-color: var(--teal-200);
+}
+
+.text-school_bus_yellow-500 {
+    color: var(--school-bus-yellow-500);
+}
+
+.text-robin_egg_blue-500 {
+    color: var(--robin-egg-blue-500);
+}
+
+.bg-school_bus_yellow-500 {
+    background-color: var(--school-bus-yellow-500);
+}
+
+.bg-school_bus_yellow-600:hover {
+    background-color: var(--school-bus-yellow-600);
+}
+
+.hover\:text-school_bus_yellow-500:hover {
+    color: var(--school-bus-yellow-500);
+}
+
+.text-mikado_yellow-500 {
+    color: var(--mikado-yellow-500);
+}
+
+.bg-mikado_yellow-500 {
+    background-color: var(--mikado-yellow-500);
+}
+
+.border-teal-700 {
+    border-color: var(--teal-300);
+}
+
+/* Text Shadow */
+.text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Sections */
+section {
+    position: relative;
+    padding: 6rem 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    z-index: 1; /* Ensure sections appear above the background */
+}
+
+/* Navigation */
+nav {
+    z-index: 50; /* Ensure navigation stays on top */
+}
+
+/* Hero Section */
+#hero {
+    padding-top: 8rem;
+}
+
+#scrolling-text {
+    animation: scrollText 15s linear infinite;
+    white-space: nowrap;
+    background: linear-gradient(90deg, 
+        var(--school-bus-yellow-500), 
+        var(--robin-egg-blue-500), 
+        var(--mikado-yellow-500), 
+        var(--teal-600), 
+        var(--school-bus-yellow-500));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes scrollText {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Mascot Placeholders */
+#mascot-placeholder, #mascot-video, #mascot-festival, #mascot-about {
+    background: radial-gradient(circle, rgba(254, 216, 17, 0.3) 0%, rgba(2, 206, 203, 0.1) 70%);
+    border: 2px dashed var(--school-bus-yellow-500);
+    transition: all 0.5s ease;
+}
+
+#mascot-placeholder:hover, #mascot-video:hover, #mascot-festival:hover, #mascot-about:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(254, 216, 17, 0.5);
+}
+
+/* Video Section */
+#videos {
+    background-color: rgba(1, 26, 25, 0.7);
+}
+
+/* Festival Section */
+#festival {
+    background-color: rgba(2, 41, 41, 0.7);
+}
+
+/* About Section */
+#about {
+    background-color: rgba(1, 26, 25, 0.7);
+}
+
+/* Footer */
+footer {
+    background-color: var(--teal-200);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #scrolling-text {
+        font-size: 3rem;
+    }
+    
+    #mascot-placeholder {
+        width: 10rem;
+        height: 10rem;
+    }
+    
+    section {
+        padding: 4rem 0;
+    }
+}
+
+/* 3D Background Container */
+#bg-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Changed from -1 to 0 to ensure visibility */
+}
+
+/* Animations */
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--teal-200);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--school-bus-yellow-500);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--mikado-yellow-500);
+}
