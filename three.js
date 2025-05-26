@@ -82,9 +82,9 @@ scene.add(bottomLight);
 
 
 
-// Bring back AxesHelper for debugging
-const axesHelper = new THREE.AxesHelper( 5 ); // Size 5
-scene.add( axesHelper );
+// // Bring back AxesHelper for debugging
+// const axesHelper = new THREE.AxesHelper( 5 ); // Size 5
+// scene.add( axesHelper );
 
 // Removed OrbitControls instantiation
 // const controls = new OrbitControls(camera, renderer.domElement);
@@ -255,28 +255,42 @@ const modelMove = () => {
 
     if (position_active_index >= 0) {
         let new_coordinates = activePositionArray[position_active_index];
+
+        // Add small random variations to target position and rotation
+        const randomIntensity = 0.5; // Adjust this value to control the amount of randomness
+        const targetPosition = {
+            x: new_coordinates.position.x + (Math.random() - 0.5) * randomIntensity,
+            y: new_coordinates.position.y + (Math.random() - 0.5) * randomIntensity,
+            z: new_coordinates.position.z + (Math.random() - 0.5) * randomIntensity
+        };
+        const targetRotation = {
+            x: new_coordinates.rotation.x + (Math.random() - 0.5) * randomIntensity * 0.5, // Reduced random rotation
+            y: new_coordinates.rotation.y + (Math.random() - 0.5) * randomIntensity * 0.5, // Reduced random rotation
+            z: new_coordinates.rotation.z + (Math.random() - 0.5) * randomIntensity * 0.5  // Reduced random rotation
+        };
+
         // Apply GSAP tweens to the model group
         gsap.to(modelGroup.position, {
-            x: new_coordinates.position.x,
-            y: new_coordinates.position.y,
-            z: new_coordinates.position.z,
-            duration: 1.5, // Keep duration for smooth animation between points
-            ease: "power2.inOut"
+            x: targetPosition.x,
+            y: targetPosition.y,
+            z: targetPosition.z,
+            duration: 1.5, // Increased duration for smoother animation
+            ease: "back.inOut(1.2)" // Funky and smooth ease for position
         });
         gsap.to(modelGroup.rotation, {
-            x: new_coordinates.rotation.x,
-            y: new_coordinates.rotation.y,
-            z: new_coordinates.rotation.z,
-            duration: 1.5, // Keep duration for smooth animation between points
-            ease: "power2.inOut"
+            x: targetRotation.x,
+            y: targetRotation.y,
+            z: targetRotation.z,
+            duration: 1.5, // Increased duration for smoother animation
+            ease: "back.inOut(1.2)" // Unified ease with less overshoot for smoother rotation
         });
         // Add GSAP tween for scale
         gsap.to(modelGroup.scale, {
-            x: new_coordinates.scale.x,
-            y: new_coordinates.scale.y,
-            z: new_coordinates.scale.z,
-            duration: 1.5, // Keep duration for smooth animation between points
-            ease: "power2.inOut"
+            x: new_coordinates.scale.x + (Math.random() - 0.5) * randomIntensity * 0.2, // Add small random scale variation
+            y: new_coordinates.scale.y + (Math.random() - 0.5) * randomIntensity * 0.2, // Add small random scale variation
+            z: new_coordinates.scale.z + (Math.random() - 0.5) * randomIntensity * 0.2, // Add small random scale variation
+            duration: 1.5, // Increased duration for smoother animation
+            ease: "back.inOut(1.7)" // Funky and smooth ease for scale
         });
         // console.log('Model rotation after modelMove:', bee.rotation); // Log rotation after modelMove
     } else {
