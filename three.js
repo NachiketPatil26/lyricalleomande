@@ -6,7 +6,7 @@ import { gsap } from 'https://cdn.skypack.dev/gsap';
 // const container = document.getElementById('container3D');
 
 const camera = new THREE.PerspectiveCamera(
-    75, // Keep FOV at 75 unless a different value is preferred
+    80, // Keep FOV at 75 unless a different value is preferred
     // Use window aspect ratio again
     window.innerWidth / window.innerHeight,
     0.1,
@@ -37,23 +37,19 @@ loader.load('./lemon.glb',
             console.log('Model has no animations.');
         }
         
-        // modelMove() is called after the model is loaded and DOM is ready
-        // modelMove(); 
-
-        // Adjust model scale, position, and rotation after loading
-        // Find a scale that looks good over the hero section
-        modelGroup.scale.set(140, 140, 140); // Increased scale significantly
-        console.log('Model Group scale after adjustment:', modelGroup.scale); // Log group scale
-        
-        // Set initial position over the hero section
+    
         // These values will need tuning based on visual feedback
-        modelGroup.position.set(13, 12, 0); // Adjusted position to the right and slightly down
+        modelGroup.position.set(6, 0, 0); // Adjusted position to the right and slightly down
         console.log('Model Group position after adjustment:', modelGroup.position); // Log group position
 
         // Set initial rotation (e.g., facing forward or slightly rotated)
         // Rotate 90 degrees around the Z-axis and ~20 degrees around X-axis
-        modelGroup.rotation.set(0, 0, Math.PI / 2); // Added ~20 degree X-axis rotation
+        modelGroup.rotation.set(0, 6, 0); // Added ~20 degree X-axis rotation
         console.log('Model Group rotation after adjustment:', modelGroup.rotation); // Log group rotation
+
+
+        modelGroup.scale.set(8, 8, 8); // Increased scale significantly
+        console.log('Model Group scale after adjustment:', modelGroup.scale); // Log group scale
 
         // Initial render after model is added - not needed with continuous loop
         // reRender3D();
@@ -73,15 +69,15 @@ renderer.setClearColor( 0x000000, 0 ); // Ensure transparency
 document.getElementById('container3D').appendChild(renderer.domElement);
 
 // light
-const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Reduced ambient light intensity
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.3); // Reduced ambient light intensity
 scene.add(ambientLight);
 
-const topLight = new THREE.DirectionalLight(0xffffff, 1); // Increased directional light intensity significantly
-topLight.position.set(750, 750, 750); // Adjusted directional light position (e.g., top-right-front)
-scene.add(topLight);
+// const topLight = new THREE.DirectionalLight(0xffffff, 0.25); // Increased directional light intensity significantly
+// topLight.position.set(750, 750, 750); // Adjusted directional light position (e.g., top-right-front)
+// scene.add(topLight);
 
-const bottomLight = new THREE.DirectionalLight(0xffffff, 0.75); // You can adjust intensity as needed
-bottomLight.position.set(-250, -500, 500); // Below and in front of the object
+const bottomLight = new THREE.DirectionalLight(0xffffff, 0.1); // You can adjust intensity as needed
+bottomLight.position.set(-250, -500, 1200); // Below and in front of the object
 scene.add(bottomLight);
 
 
@@ -104,53 +100,126 @@ const reRender3D = () => {
     renderer.render(scene, camera);
     // Reinstate mixer update if model had animations, but it doesn't
     if(mixer) mixer.update(0.02);
+
+    // Add damping for mouse follow effect
+    if (modelGroup) { // Ensure modelGroup is loaded
+        const dampingFactor = 0.05; // Decreased damping factor for smoother movement
+        modelGroup.rotation.y += (targetRotationY - modelGroup.rotation.y) * dampingFactor;
+        modelGroup.rotation.x += (targetRotationX - modelGroup.rotation.x) * dampingFactor;
+    }
+
 };
 reRender3D(); // Start continuous render loop
+
+// Variables for mouse tracking and model rotation
+let mouseX = 0;
+let mouseY = 0;
+let targetRotationY = 0;
+let targetRotationX = 0;
+
+// Mousemove event listener
+document.addEventListener('mousemove', (event) => {
+    // Normalize mouse coordinates to a range like -1 to 1
+    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Map mouse position to target rotation values
+    // Adjust the multiplier (e.g., 0.5) to control the amount of rotation
+    targetRotationY = mouseX * 0.5;
+    targetRotationX = mouseY * -0.5; // Invert X rotation to look towards the cursor vertically
+});
 
 let arrPositionModel = [
     {
         id: 'hero', // Corresponds to the #hero section
-        position: {x: 13, y: 12, z: 0}, // Adjusted position for hero section - Matching initial position
-        rotation: {x: 0, y: 0, z: Math.PI / 2}, // Added 90 degree Z-axis rotation to hero position
-        scale: {x: 140, y: 140, z: 140} // Add scale for hero section (using current initial scale)
+        position: {x: 6, y: 0, z: 0}, // Adjusted position for hero section - Matching initial position
+        rotation: {x: 0, y: 0, z:0}, // Added 90 degree Z-axis rotation to hero position
+        scale: {x: 8, y: 8, z: 8} // Add scale for hero section (using current initial scale)
     },
     {
         id: "videos", // Corresponds to the #videos section
-        position: { x: 5, y: -2, z: -5 }, // Adjust position for videos section
-        rotation: { x: 0, y: Math.PI / 4, z: 0 }, // Example rotation
-        scale: {x: 1, y: 1, z: 1} // Add a default scale for other sections
+        position: { x: -7, y: -2, z: -1 }, // Adjust position for videos section
+        rotation: { x: 0, y:Math.PI / 6 , z: 0 }, // Example rotation
+        scale: {x: 7, y: 7, z: 7} // Add a default scale for other sections
     },
     {
         id: "festival", // Corresponds to the #festival section
-        position: { x: -5, y: -3, z: -8 }, // Adjust position for festival section
-        rotation: { x: 0, y: -Math.PI / 4, z: 0 }, // Example rotation
-        scale: {x: 1, y: 1, z: 1} // Add a default scale for other sections
+        position: { x: 8, y: 0, z: 0 }, // Adjust position for festival section
+        rotation: { x: 0, y:0, z: 0 }, // Example rotation
+        scale: {x: 8, y: 8, z: 8} // Add a default scale for other sections
     },
     {
         id: "drink", // Corresponds to the #drink section
-        position: { x: 0, y: -1, z: -2 }, // Adjust position for drink section
-        rotation: { x: 0, y: Math.PI, z: 0 }, // Example rotation
-        scale: {x: 1, y: 1, z: 1} // Add a default scale for other sections
+        position: { x: -10, y: -1, z: -2 }, // Adjust position for drink section
+        rotation: { x: 0, y: 0, z: 0 }, // Example rotation
+        scale: {x: 6, y: 6, z: 6} // Add a default scale for other sections
     },
      {
         id: "shop", // Corresponds to the #shop section
-        position: { x: 8, y: -2, z: -6 }, // Adjust position for shop section
+        position: { x: 10, y: -2, z: -6 }, // Adjust position for shop section
         rotation: { x: 0, y: -Math.PI / 2, z: 0 }, // Example rotation
-        scale: {x: 1, y: 1, z: 1} // Add a default scale for other sections
+        scale: {x: 4, y: 4, z: 4} // Add a default scale for other sections
     },
       {
         id: "blog", // Corresponds to the #blog section
-        position: { x: -8, y: -2, z: -6 }, // Adjust position for blog section
-        rotation: { x: 0, y: Math.PI / 2, z: 0 }, // Example rotation
-        scale: {x: 1, y: 1, z: 1} // Add a default scale for other sections
+        position: { x: -10, y: -2, z: -6 }, // Adjust position for blog section
+        rotation: { x: 0, y: Math.PI / 3, z: 0 }, // Example rotation
+        scale: {x: 5, y: 5, z: 5} // Add a default scale for other sections
     },
      {
         id: "about", // Corresponds to the #about section
-        position: { x: 5, y: 0, z: 0 }, // Adjusted position for about section - Centered horizontally, slightly down vertically, pushed back slightly in Z
-        rotation: { x: 0, y: 0, z: Math.PI / 2 }, // Keep existing rotation for about section
-        scale: {x: 100, y: 100, z: 100} // Add a scale for about section (example)
+        position: { x: 0, y: 1, z: 0 }, // Adjusted position for about section - Centered horizontally, slightly down vertically, pushed back slightly in Z
+        rotation: { x: 0, y: 0, z: 0 }, // Keep existing rotation for about section
+        scale: {x: 7, y: 7, z: 7} // Add a scale for about section (example)
     },
 ];
+
+// New array for mobile positions
+let arrPositionModelMobile = [
+    {
+        id: 'hero', // Corresponds to the #hero section
+        position: {x: 0, y: -3, z: 2}, // Adjusted position for mobile hero (lower and slightly forward)
+        rotation: {x: 0, y: 0, z: 0}, // Rotation for mobile hero
+        scale: {x: 4, y: 4, z: 4} // Slightly increased scale for mobile hero
+    },
+    {
+        id: "videos", // Corresponds to the #videos section
+        position: { x: -2, y: -4, z: 1 }, // Position for mobile videos (left, lower, slightly forward)
+        rotation: { x: 0, y: Math.PI / 4, z: 0 }, // Rotation for mobile videos
+        scale: {x: 4, y: 4, z: 4} // Slightly increased scale for mobile videos
+    },
+    {
+        id: "festival", // Corresponds to the #festival section
+        position: { x: 2, y: -4, z: 1 }, // Position for mobile festival (right, lower, slightly forward)
+        rotation: { x: 0, y: -Math.PI / 4, z: 0 }, // Rotation for mobile festival
+        scale: {x: 4, y: 4, z: 4} // Slightly increased scale for mobile festival
+    },
+    {
+        id: "drink", // Corresponds to the #drink section
+        position: { x: -1, y: -2, z: 2 }, // Position for mobile drink (left, lower, more forward)
+        rotation: { x: 0, y: Math.PI / 6, z: 0 }, // Rotation for mobile drink
+        scale: {x: 5, y: 5, z: 5} // Increased scale for mobile drink
+    },
+     {
+        id: "shop", // Corresponds to the #shop section
+        position: { x: 1, y: -3, z: 2 }, // Position for mobile shop (right, lower, more forward)
+        rotation: { x: 0, y: -Math.PI / 6, z: 0 }, // Rotation for mobile shop
+        scale: {x: 5, y: 5, z: 5} // Increased scale for mobile shop
+    },
+      {
+        id: "blog", // Corresponds to the #blog section
+        position: { x: 0, y: -3, z: 1 }, // Position for mobile blog (lower, slightly forward)
+        rotation: { x: 0, y: 0, z: 0 }, // Rotation for mobile blog
+        scale: {x: 4, y: 4, z: 4} // Slightly increased scale for mobile blog
+    },
+     {
+        id: "about", // Corresponds to the #about section
+        position: { x: 0, y: -3, z: 2 }, // Position for mobile about (lower, more forward)
+        rotation: { x: 0, y: 0, z: 0 }, // Rotation for mobile about
+        scale: {x: 5, y: 5, z: 5} // Scale for mobile about (kept same)
+    },
+];
+
 const modelMove = () => {
     const sections = document.querySelectorAll('.section');
     let currentSectionId = 'hero'; // Default to hero if at the very top
@@ -170,18 +239,22 @@ const modelMove = () => {
         }
     });
 
+    // Determine which position array to use based on screen width
+    const isMobile = window.innerWidth < 768; // Using 768px as the breakpoint
+    const activePositionArray = isMobile ? arrPositionModelMobile : arrPositionModel;
+
     // Ensure we have a valid section ID, fallback to 'hero' if needed
-    const foundSection = arrPositionModel.find(val => val.id === currentSectionId);
+    const foundSection = activePositionArray.find(val => val.id === currentSectionId);
      if (!foundSection) {
          currentSectionId = 'hero';
      }
 
-    let position_active_index = arrPositionModel.findIndex(
+    let position_active_index = activePositionArray.findIndex(
         (val) => val.id === currentSectionId
     );
 
     if (position_active_index >= 0) {
-        let new_coordinates = arrPositionModel[position_active_index];
+        let new_coordinates = activePositionArray[position_active_index];
         // Apply GSAP tweens to the model group
         gsap.to(modelGroup.position, {
             x: new_coordinates.position.x,
@@ -217,8 +290,11 @@ window.addEventListener('scroll', () => {
 })
 window.addEventListener('resize', () => {
     // Use window dimensions for resizing again
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.aspect = window.innerWidth / window.innerHeight;
+    const container = document.getElementById('container3D');
+    if (container) {
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        camera.aspect = container.clientWidth / container.clientHeight;
+    }
     camera.updateProjectionMatrix();
     // Continuous rendering is active, no need to re-render here
     // reRender3D();

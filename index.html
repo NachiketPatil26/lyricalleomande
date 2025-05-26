@@ -55,7 +55,7 @@
                 width: 100%;
             }
             .floating-navbar.navbar-snapped {
-                border-radius: 0;
+                border-radius: 2rem;
             }
         }
         
@@ -66,7 +66,11 @@
                 width: 100%;
             }
             .floating-navbar.navbar-snapped {
-                border-radius: 0;
+                border-radius: 2rem;
+            }
+            .floating-navbar {
+                top: 1rem;
+                max-width: calc(100% - 1.5rem);
             }
         }
         
@@ -198,9 +202,9 @@
         }
         
         .section-bg {
-            background: rgba(6, 131, 127, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(180, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
         }
@@ -212,7 +216,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(254, 223, 17, 0.1), transparent);
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
             animation: sweep 8s linear infinite;
         }
         
@@ -225,7 +229,7 @@
             background: linear-gradient(45deg, #FEDF11, #FDC100);
             color: #06837F;
             font-weight: 700;
-            padding: 12px 32px;
+            padding: 10px 24px;
             border-radius: 50px;
             transition: all 0.3s ease;
             text-transform: uppercase;
@@ -250,8 +254,8 @@
         }
         
         .btn-primary:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 25px rgba(254, 223, 17, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
         
         .floating-particles {
@@ -289,6 +293,27 @@
         .reveal {
             opacity: 0;
             transform: translateY(50px);
+        }
+        
+        /* Add mobile padding to sections to create space for the 3D model */
+        @media (max-width: 767px) {
+            .section {
+                padding-top: 150px;
+                padding-bottom: 150px;
+            }
+            /* Adjust padding for specific sections if needed */
+            #hero {
+                padding-top: 200px;
+                padding-bottom: 100px;
+            }
+            #videos {
+                 padding-top: 100px;
+                 padding-bottom: 100px;
+            }
+            #about {
+                 padding-top: 100px;
+                 padding-bottom: 100px;
+            }
         }
         
         .video-container {
@@ -472,7 +497,7 @@
 
         /* Allow pointer events specifically on the canvas within the container */
         #container3D canvas {
-            pointer-events: auto; /* Re-enable pointer events for the canvas for scroll interactions etc. */
+            pointer-events: none; /* Allow clicks to pass through the canvas */
         }
     </style>
 </head>
@@ -498,30 +523,30 @@
         <div class="flex flex-col md:flex-row items-center justify-center gap-4">
             <div class="text-2xl bebas tracking-wider mb-2 md:mb-0 md:mr-8" aria-label="Lyrical Lemonade Logo">
                 🍋
-            </div>
-            <div class="flex flex-wrap justify-center items-center gap-2">
-                <a href="#videos" class="nav-item text-white text-sm">Videos</a>
-                <a href="#festival" class="nav-item text-white text-sm">Festival</a>
-                <a href="#drink" class="nav-item text-white text-sm">Drink</a>
-                <a href="#shop" class="nav-item text-white text-sm">Shop</a>
-                <a href="#blog" class="nav-item text-white text-sm">Blog</a>
-                <a href="#about" class="nav-item text-white text-sm">About</a>
-            </div>
+                </div>
+            <div class="hidden md:flex flex-wrap justify-center items-center gap-2">
+                    <a href="#videos" class="nav-item text-white text-sm">Videos</a>
+                    <a href="#festival" class="nav-item text-white text-sm">Festival</a>
+                    <a href="#drink" class="nav-item text-white text-sm">Drink</a>
+                    <a href="#shop" class="nav-item text-white text-sm">Shop</a>
+                    <a href="#blog" class="nav-item text-white text-sm">Blog</a>
+                    <a href="#about" class="nav-item text-white text-sm">About</a>
+                </div>
             <div class="md:hidden ml-4">
-                <button id="menu-toggle" class="text-white focus:outline-none">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
+                    <button id="menu-toggle" class="text-white focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
             </div>
-        </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4">
-            <div class="flex flex-col space-y-2">
-                <a href="#videos" class="nav-item text-white text-sm">Videos</a>
-                <a href="#festival" class="nav-item text-white text-sm">Festival</a>
-                <a href="#drink" class="nav-item text-white text-sm">Drink</a>
-                <a href="#shop" class="nav-item text-white text-sm">Shop</a>
-                <a href="#blog" class="nav-item text-white text-sm">Blog</a>
-                <a href="#about" class="nav-item text-white text-sm">About</a>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4">
+                <div class="flex flex-col space-y-2 items-center">
+                    <a href="#videos" class="nav-item text-white text-sm">Videos</a>
+                    <a href="#festival" class="nav-item text-white text-sm">Festival</a>
+                    <a href="#drink" class="nav-item text-white text-sm">Drink</a>
+                    <a href="#shop" class="nav-item text-white text-sm">Shop</a>
+                    <a href="#blog" class="nav-item text-white text-sm">Blog</a>
+                    <a href="#about" class="nav-item text-white text-sm">About</a>
             </div>
         </div>
     </nav>
@@ -531,7 +556,7 @@
         <div class="absolute inset-0 bg-black bg-opacity-30"></div>
         <div class="container mx-auto px-6 relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div class="text-left hero-content">
+                <div class="text-left hero-content lg:col-span-1">
                     <h1 class="hero-text text-6xl md:text-8xl font-black mb-6 bebas tracking-widest">
                         LYRICAL LEMONADE
                     </h1>
@@ -547,7 +572,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="flex justify-center lg:justify-end items-center h-full hero-mascot-container">
+                <div class="flex justify-center lg:justify-end items-center h-full hero-mascot-container lg:col-span-1">
                     <!-- Removed the 2D lemon mascot HTML -->
                     <!-- <div class="lemon-mascot transform hover:scale-110 transition-transform duration-300"></div> -->
                 </div>
@@ -564,28 +589,31 @@
     <!-- Simplified Video Section -->
     <section id="videos" class="min-h-screen py-20 bg-gray-900 reveal section">
         <div class="container mx-auto px-6">
-            <div class="text-center mb-16 section-header">
+            <div class="text-center mb-10 section-header">
                 <h2 class="text-5xl font-bold text-white mb-4 bebas text-glow">FRESH CONTENT</h2>
-                <div class="w-24 h-1 mx-auto mb-6 morphing-bg rounded-full"></div>
-                <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+                <div class="w-24 h-1 mx-auto mb-4 morphing-bg rounded-full"></div>
+                <!-- <p class="text-gray-300 text-lg max-w-2xl mx-auto">
                     Discover the latest music videos and exclusive content from today's hottest artists.
-                </p>
+                </p> -->
             </div>
             
             <div class="section-bg rounded-2xl p-8 video-section">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                    <div class="text-left">
-                        <h3 class="text-3xl font-bold text-white mb-4 bebas">Latest Releases</h3>
-                        <p class="text-gray-300 text-lg mb-6">
-                            Stay updated with our newest music videos and exclusive behind-the-scenes content.
-                            From chart-topping hits to underground gems, we bring you the best in hip-hop visuals.
-                        </p>
-                        <button class="btn-primary">
-                            <i class="fas fa-play mr-2"></i>Watch More
-                        </button>
-                    </div>
-                    <div class="video-container aspect-w-16 aspect-h-9 rounded-xl overflow-hidden shadow-2xl transform transition-all duration-700 ease-out">
-                    <iframe class="w-full h-96" src="https://www.youtube.com/embed/videoseries?list=PLHiCeIV7logagRpPDViUBnwNifftqXAvZ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <div class="lg:col-span-1"><!-- Empty space on the left --></div>
+                    <div class="flex flex-col lg:col-span-1">
+                         <div class="video-container aspect-w-16 aspect-h-9 rounded-xl overflow-hidden shadow-2xl transform transition-all duration-700 ease-out mb-8">
+                         <iframe class="w-full h-96" src="https://www.youtube.com/embed/videoseries?list=PLHiCeIV7logagRpPDViUBnwNifftqXAvZ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                         </div>
+                         <div class="text-left">
+                             <h3 class="text-3xl font-bold text-white mb-3 bebas">Latest Releases</h3>
+                             <p class="text-gray-300 text-lg mb-3">
+                                 Stay updated with our newest music videos and exclusive behind-the-scenes content.
+                                 From chart-topping hits to underground gems, we bring you the best in hip-hop visuals.
+                             </p>
+                             <button class="btn-primary">
+                                 <i class="fas fa-play mr-2"></i>Watch More
+                             </button>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -595,58 +623,69 @@
     <!-- Festival Section -->
     <section id="festival" class="h-auto py-20 bg-gradient-to-br from-gray-900 to-gray-800 reveal section">
         <div class="container mx-auto px-6">
-            <div class="text-center mb-16 section-header">
-                <h2 class="text-5xl font-bold text-white mb-4 bebas text-glow">SUMMER SMASH</h2>
-                <div class="w-24 h-1 mx-auto mb-6 morphing-bg rounded-full"></div>
-                <p class="text-gray-300 text-lg">The ultimate music festival experience.</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto festival-cards">
-                <div class="section-bg ticket-card p-8 rounded-2xl text-center">
-                    <h3 class="text-2xl font-bold mb-4 text-glow" style="color: #FEDF11;">General</h3>
-                    <p class="text-4xl font-black text-white mb-6">$149</p>
-                    <button class="btn-primary w-full">Get Tickets</button>
-                </div>
-                <div class="relative">
-                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-gray-900 px-4 py-1 rounded-full text-sm font-bold z-10">
-                        POPULAR
-                    </div>
-                    <div class="section-bg ticket-card p-8 rounded-2xl text-center pulse-border" style="transform: scale(1.05);">
-                        <h3 class="text-2xl font-bold mb-4 text-glow" style="color: #FEDF11;">VIP</h3>
-                        <p class="text-4xl font-black text-white mb-6">$499</p>
-                        <button class="btn-primary w-full">Get Tickets</button>
-                    </div>
-                </div>
-                <div class="section-bg ticket-card p-8 rounded-2xl text-center">
-                    <h3 class="text-2xl font-bold mb-4 text-glow" style="color: #FEDF11;">Platinum</h3>
-                    <p class="text-4xl font-black text-white mb-6">$299</p>
-                    <button class="btn-primary w-full">Get Tickets</button>
-                </div>
-            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                 <div class="lg:col-span-1">
+                     <div class="text-center mb-16 section-header lg:text-left">
+                         <h2 class="text-5xl font-bold text-white mb-4 bebas text-glow">SUMMER SMASH</h2>
+                         <div class="w-24 h-1 mb-6 morphing-bg rounded-full lg:mx-0"></div>
+                         <p class="text-gray-300 text-lg">The ultimate music festival experience.</p>
+                     </div>
+                    
+                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl lg:max-w-none festival-cards">
+                         <div class="section-bg ticket-card p-8 rounded-2xl text-center">
+                             <h3 class="text-2xl font-bold mb-4 text-glow" style="color: #FEDF11;">General</h3>
+                             <p class="text-4xl font-black text-white mb-6">$149</p>
+                             <div class="flex justify-center">
+                                 <button class="btn-primary px-6 py-2 max-w-xs">Get Tickets</button>
+                             </div>
+                         </div>
+                         <div class="relative">
+                             <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-gray-900 px-4 py-1 rounded-full text-sm font-bold z-10">
+                                 POPULAR
+                             </div>
+                             <div class="section-bg ticket-card p-8 rounded-2xl text-center pulse-border" style="transform: scale(1.05);">
+                                 <h3 class="text-2xl font-bold mb-4 text-glow" style="color: #FEDF11;">VIP</h3>
+                                 <p class="text-4xl font-black text-white mb-6">$499</p>
+                                 <div class="flex justify-center">
+                                     <button class="btn-primary px-6 py-2 max-w-xs">Get Tickets</button>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="section-bg ticket-card p-8 rounded-2xl text-center">
+                             <h3 class="text-2xl font-bold mb-4 text-glow" style="color: #FEDF11;">Platinum</h3>
+                             <p class="text-4xl font-black text-white mb-6">$299</p>
+                             <div class="flex justify-center">
+                                 <button class="btn-primary px-6 py-2 max-w-xs">Get Tickets</button>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="lg:col-span-1"><!-- Empty space on the right --></div>
+             </div>
         </div>
     </section>
 
     <!-- New Sections -->
     <section id="drink" class="py-20 bg-gray-900 reveal section">
         <div class="container mx-auto px-6 text-center">
-            <h2 class="text-5xl font-bold text-white mb-8 bebas ">FRESH DRINKS</h2>
-            <p class="text-gray-300 text-lg mb-8">Premium lemonade for the culture.</p>
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 bebas ">FRESH DRINKS</h2>
+            <p class="text-base md:text-lg text-gray-300 mb-8">Premium lemonade for the culture.</p>
             <button class="btn-primary">Shop Now</button>
         </div>
     </section>
 
     <section id="shop" class="py-20 bg-gradient-to-br from-gray-800 to-gray-900 reveal section">
         <div class="container mx-auto px-6 text-center">
-            <h2 class="text-5xl font-bold text-white mb-8 bebas">MERCH STORE</h2>
-            <p class="text-gray-300 text-lg mb-8">Rep the brand with official gear.</p>
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 bebas">MERCH STORE</h2>
+            <p class="text-base md:text-lg text-gray-300 mb-8">Rep the brand with official gear.</p>
             <button class="btn-primary">Browse Collection</button>
         </div>
     </section>
 
     <section id="blog" class="py-20 bg-gray-900 reveal section">
         <div class="container mx-auto px-6 text-center">
-            <h2 class="text-5xl font-bold text-white mb-8 bebas">FRESH STORIES</h2>
-            <p class="text-gray-300 text-lg mb-8">Behind-the-scenes and artist features.</p>
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 bebas">FRESH STORIES</h2>
+            <p class="text-base md:text-lg text-gray-300 mb-8">Behind-the-scenes and artist features.</p>
             <button class="btn-primary">Read More</button>
         </div>
     </section>
@@ -654,38 +693,38 @@
     <!-- Simplified About Section -->
     <section id="about" class="py-20 bg-gradient-to-br from-gray-900 to-black reveal section">
         <div class="container mx-auto px-6">
-            <div class="text-center mb-16 section-header">
-                <h2 class="text-5xl font-bold text-white mb-4 bebas text-glow">ABOUT US</h2>
-                <div class="w-24 h-1 mx-auto morphing-bg rounded-full"></div>
-            </div>
+             <div class="text-center mb-16 section-header">
+                 <h2 class="text-5xl font-bold text-white mb-4 bebas text-glow">ABOUT US</h2>
+                 <div class="w-24 h-1 mx-auto morphing-bg rounded-full"></div>
+             </div>
             
-            <div class="max-w-4xl mx-auto">
-                <div class="section-bg rounded-2xl p-12 text-center about-content">
-                    <div class="lemon-mascot mx-auto mb-8 about-mascot"></div>
-                    <p class="text-gray-300 text-xl leading-relaxed mb-8 about-text">
-                        From blog to multimedia powerhouse, Lyrical Lemonade has become the voice of hip-hop culture, 
-                        connecting artists with global audiences through groundbreaking visuals and unforgettable experiences.
-                    </p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center stats-grid">
-                        <div class="stat-item">
-                            <div class="text-3xl font-bold text-glow counter" style="color: #FEDF11;" data-target="1000000000">0</div>
-                            <div class="text-gray-400">Views</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="text-3xl font-bold text-glow counter" style="color: #FEDF11;" data-target="500">0</div>
-                            <div class="text-gray-400">Videos</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="text-3xl font-bold text-glow counter" style="color: #FEDF11;" data-target="50">0</div>
-                            <div class="text-gray-400">Artists</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="text-3xl font-bold text-glow counter" style="color: #FEDF11;" data-target="10">0</div>
-                            <div class="text-gray-400">Years</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+             <div class="max-w-4xl mx-auto">
+                 <div class="section-bg rounded-2xl p-12 text-center about-content">
+                     <div class="lemon-mascot mx-auto mb-8 about-mascot"></div>
+                     <p class="text-gray-300 text-xl leading-relaxed mb-8 about-text">
+                         From blog to multimedia powerhouse, Lyrical Lemonade has become the voice of hip-hop culture, 
+                         connecting artists with global audiences through groundbreaking visuals and unforgettable experiences.
+                     </p>
+                     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center stats-grid">
+                         <div class="stat-item">
+                             <div class="text-3xl font-bold text-glow counter" style="color: #FEDF11;" data-target="1000000000">0</div>
+                             <div class="text-gray-400">Views</div>
+                         </div>
+                         <div class="stat-item">
+                             <div class="text-3xl font-bold text-glow counter" style="color: #FEDF11;" data-target="500">0</div>
+                             <div class="text-gray-400">Videos</div>
+                         </div>
+                         <div class="stat-item">
+                             <div class="text-3xl font-bold text-glow counter" style="color: #FEDF11;" data-target="50">0</div>
+                             <div class="text-gray-400">Artists</div>
+                         </div>
+                         <div class="stat-item">
+                             <div class="text-3xl font-bold text-glow counter" style="color: #FEDF11;" data-target="10">0</div>
+                             <div class="text-gray-400">Years</div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
         </div>
     </section>
 
@@ -817,7 +856,7 @@
                         .from('.section-header p', {duration: 1, y: 30, opacity: 0, ease: "power2.out"}, "-=0.3")
                         .from('.video-section .text-left', {duration: 1, x: -50, opacity: 0, ease: "power2.out"}, "-=0.2")
                         .from('.video-container', {
-                            duration: 1.5,
+                            duration: 0.8,
                             scale: 0.95,
                             opacity: 0,
                             ease: "power3.out",
