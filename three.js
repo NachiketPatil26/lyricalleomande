@@ -37,23 +37,9 @@ loader.load('./lemon.glb',
             console.log('Model has no animations.');
         }
         
-    
-        // These values will need tuning based on visual feedback
-        modelGroup.position.set(6, 0, 0); // Adjusted position to the right and slightly down
-        console.log('Model Group position after adjustment:', modelGroup.position); // Log group position
-
-        // Set initial rotation (e.g., facing forward or slightly rotated)
-        // Rotate 90 degrees around the Z-axis and ~20 degrees around X-axis
-        modelGroup.rotation.set(0, 6, 0); // Added ~20 degree X-axis rotation
-        console.log('Model Group rotation after adjustment:', modelGroup.rotation); // Log group rotation
-
-
-        modelGroup.scale.set(8, 8, 8); // Increased scale significantly
-        console.log('Model Group scale after adjustment:', modelGroup.scale); // Log group scale
-
-        // Initial render after model is added - not needed with continuous loop
-        // reRender3D();
-
+        modelGroup.position.set(6, 0, 0);
+        modelGroup.rotation.set(0, 6, 0);
+        modelGroup.scale.set(8, 8, 8);
     },
     function (xhr) {
         console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
@@ -94,222 +80,281 @@ scene.add(bottomLight);
 // const controls.maxPolarAngle = Math.PI / 2; // Optional: limit vertical rotation
 // controls.enableZoom = false; // Disable mouse wheel zoom to allow page scrolling
 
-const reRender3D = () => {
-    requestAnimationFrame(reRender3D); // Reinstate continuous rendering loop
-    // Removed controls.update();
-    renderer.render(scene, camera);
-    // Reinstate mixer update if model had animations, but it doesn't
-    if(mixer) mixer.update(0.02);
-
-    // Add damping for mouse follow effect
-    if (modelGroup) { // Ensure modelGroup is loaded
-        const dampingFactor = 0.05; // Decreased damping factor for smoother movement
-        modelGroup.rotation.y += (targetRotationY - modelGroup.rotation.y) * dampingFactor;
-        modelGroup.rotation.x += (targetRotationX - modelGroup.rotation.x) * dampingFactor;
-    }
-
-};
-reRender3D(); // Start continuous render loop
-
 // Variables for mouse tracking and model rotation
 let mouseX = 0;
 let mouseY = 0;
 let targetRotationY = 0;
 let targetRotationX = 0;
 
-// Mousemove event listener
-document.addEventListener('mousemove', (event) => {
-    // Normalize mouse coordinates to a range like -1 to 1
-    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+// Function to check if an element is in viewport
+function isInViewport(element) {
+    const rect = element.getBoundingClientRect();
+    return (
+        rect.top <= window.innerHeight / 2 &&
+        rect.bottom >= window.innerHeight / 2
+    );
+}
 
-    // Map mouse position to target rotation values
-    // Adjust the multiplier (e.g., 0.5) to control the amount of rotation
-    targetRotationY = mouseX * 0.5;
-    targetRotationX = mouseY * -0.5; // Invert X rotation to look towards the cursor vertically
-});
-
+// Position arrays for different sections
 let arrPositionModel = [
     {
-        id: 'hero', // Corresponds to the #hero section
-        position: {x: 6, y: 0, z: 0}, // Adjusted position for hero section - Matching initial position
-        rotation: {x: 0, y: 0, z:0}, // Added 90 degree Z-axis rotation to hero position
-        scale: {x: 8, y: 8, z: 8} // Add scale for hero section (using current initial scale)
+        id: 'hero',
+        position: {x: 6, y: 0, z: 0},
+        rotation: {x: 0, y: 6, z: 0},
+        scale: {x: 8, y: 8, z: 8}
     },
     {
-        id: "videos", // Corresponds to the #videos section
-        position: { x: -7, y: -2, z: -1 }, // Adjust position for videos section
-        rotation: { x: 0, y:Math.PI / 6 , z: 0 }, // Example rotation
-        scale: {x: 7, y: 7, z: 7} // Add a default scale for other sections
+        id: "videos",
+        position: { x: -7, y: -2, z: -1 },
+        rotation: { x: 0, y:Math.PI / 6 , z: 0 },
+        scale: {x: 7, y: 7, z: 7}
     },
     {
-        id: "festival", // Corresponds to the #festival section
-        position: { x: 8, y: 0, z: 0 }, // Adjust position for festival section
-        rotation: { x: 0, y:0, z: 0 }, // Example rotation
-        scale: {x: 8, y: 8, z: 8} // Add a default scale for other sections
+        id: "festival",
+        position: { x: 8, y: 0, z: 0 },
+        rotation: { x: 0, y:0, z: 0 },
+        scale: {x: 8, y: 8, z: 8}
     },
     {
-        id: "drink", // Corresponds to the #drink section
-        position: { x: -10, y: -1, z: -2 }, // Adjust position for drink section
-        rotation: { x: 0, y: 0, z: 0 }, // Example rotation
-        scale: {x: 6, y: 6, z: 6} // Add a default scale for other sections
+        id: "drink",
+        position: { x: -10, y: -1, z: -2 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: {x: 6, y: 6, z: 6}
     },
      {
-        id: "shop", // Corresponds to the #shop section
-        position: { x: 10, y: -2, z: -6 }, // Adjust position for shop section
-        rotation: { x: 0, y: -Math.PI / 2, z: 0 }, // Example rotation
-        scale: {x: 4, y: 4, z: 4} // Add a default scale for other sections
+        id: "shop",
+        position: { x: 10, y: -2, z: -6 },
+        rotation: { x: 0, y: -Math.PI / 2, z: 0 },
+        scale: {x: 4, y: 4, z: 4}
     },
       {
-        id: "blog", // Corresponds to the #blog section
-        position: { x: -10, y: -2, z: -6 }, // Adjust position for blog section
-        rotation: { x: 0, y: Math.PI / 3, z: 0 }, // Example rotation
-        scale: {x: 5, y: 5, z: 5} // Add a default scale for other sections
+        id: "blog",
+        position: { x: -10, y: -2, z: -6 },
+        rotation: { x: 0, y: Math.PI / 3, z: 0 },
+        scale: {x: 5, y: 5, z: 5}
     },
      {
-        id: "about", // Corresponds to the #about section
-        position: { x: 0, y: 1, z: 0 }, // Adjusted position for about section - Centered horizontally, slightly down vertically, pushed back slightly in Z
-        rotation: { x: 0, y: 0, z: 0 }, // Keep existing rotation for about section
-        scale: {x: 7, y: 7, z: 7} // Add a scale for about section (example)
+        id: "about", // About section now handled by special lock logic
+        position: { x: 0, y: 1, z: 0 }, // Default position if lock fails (shouldn't happen)
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: {x: 7, y: 7, z: 7}
     },
 ];
 
-// New array for mobile positions
 let arrPositionModelMobile = [
     {
-        id: 'hero', // Corresponds to the #hero section
-        position: {x: 0, y: -3, z: 2}, // Adjusted position for mobile hero (lower and slightly forward)
-        rotation: {x: 0, y: 0, z: 0}, // Rotation for mobile hero
-        scale: {x: 4, y: 4, z: 4} // Slightly increased scale for mobile hero
+        id: 'hero',
+        position: {x: 0, y: -3, z: 2},
+        rotation: {x: 0, y: 0, z: 0},
+        scale: {x: 4, y: 4, z: 4}
     },
     {
-        id: "videos", // Corresponds to the #videos section
-        position: { x: -2, y: -4, z: 1 }, // Position for mobile videos (left, lower, slightly forward)
-        rotation: { x: 0, y: Math.PI / 4, z: 0 }, // Rotation for mobile videos
-        scale: {x: 4, y: 4, z: 4} // Slightly increased scale for mobile videos
+        id: "videos",
+        position: { x: -2, y: -4, z: 1 },
+        rotation: { x: 0, y: Math.PI / 4, z: 0 },
+        scale: {x: 4, y: 4, z: 4}
     },
     {
-        id: "festival", // Corresponds to the #festival section
-        position: { x: 2, y: -4, z: 1 }, // Position for mobile festival (right, lower, slightly forward)
-        rotation: { x: 0, y: -Math.PI / 4, z: 0 }, // Rotation for mobile festival
-        scale: {x: 4, y: 4, z: 4} // Slightly increased scale for mobile festival
+        id: "festival",
+        position: { x: 2, y: -4, z: 1 },
+        rotation: { x: 0, y: -Math.PI / 4, z: 0 },
+        scale: {x: 4, y: 4, z: 4}
     },
     {
-        id: "drink", // Corresponds to the #drink section
-        position: { x: -1, y: -2, z: 2 }, // Position for mobile drink (left, lower, more forward)
-        rotation: { x: 0, y: Math.PI / 6, z: 0 }, // Rotation for mobile drink
-        scale: {x: 5, y: 5, z: 5} // Increased scale for mobile drink
+        id: "drink",
+        position: { x: -1, y: -2, z: 2 },
+        rotation: { x: 0, y: Math.PI / 6, z: 0 },
+        scale: {x: 5, y: 5, z: 5}
     },
      {
-        id: "shop", // Corresponds to the #shop section
-        position: { x: 1, y: -3, z: 2 }, // Position for mobile shop (right, lower, more forward)
-        rotation: { x: 0, y: -Math.PI / 6, z: 0 }, // Rotation for mobile shop
-        scale: {x: 5, y: 5, z: 5} // Increased scale for mobile shop
+        id: "shop",
+        position: { x: 1, y: -3, z: 2 },
+        rotation: { x: 0, y: -Math.PI / 6, z: 0 },
+        scale: {x: 5, y: 5, z: 5}
     },
       {
-        id: "blog", // Corresponds to the #blog section
-        position: { x: 0, y: -3, z: 1 }, // Position for mobile blog (lower, slightly forward)
-        rotation: { x: 0, y: 0, z: 0 }, // Rotation for mobile blog
-        scale: {x: 4, y: 4, z: 4} // Slightly increased scale for mobile blog
+        id: "blog",
+        position: { x: 0, y: -3, z: 1 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: {x: 4, y: 4, z: 4}
     },
      {
-        id: "about", // Corresponds to the #about section
-        position: { x: 0, y: -3, z: 2 }, // Position for mobile about (lower, more forward)
-        rotation: { x: 0, y: 0, z: 0 }, // Rotation for mobile about
-        scale: {x: 5, y: 5, z: 5} // Scale for mobile about (kept same)
+        id: "about", // About section now handled by special lock logic
+        position: { x: 0, y: -3, z: 2 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: {x: 5, y: 5, z: 5}
     },
 ];
 
 const modelMove = () => {
     const sections = document.querySelectorAll('.section');
-    let currentSectionId = 'hero'; // Default to hero if at the very top
+    let currentSectionId = 'hero';
     let closestSectionTop = Infinity;
 
     sections.forEach((section) => {
         const rect = section.getBoundingClientRect();
-        // Find the section whose top is closest to the top of the viewport (but not above it significantly)
-        // This logic prioritizes sections as their top edge enters the view
-        if (rect.top <= window.innerHeight / 2 && rect.top < closestSectionTop) {
-             closestSectionTop = rect.top;
-             currentSectionId = section.id;
-        }
-         // Handle case when scrolling up and the previous section comes back into view
-        if (rect.bottom > window.innerHeight / 2 && rect.top < window.innerHeight / 2 && rect.top > -window.innerHeight / 2) {
-             currentSectionId = section.id;
+        // Check if the middle of the section is in the viewport
+        const sectionMiddle = rect.top + rect.height / 2;
+        if (sectionMiddle >= 0 && sectionMiddle <= window.innerHeight) {
+             // This is an alternative check if the previous one is not accurate
+             // if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+                // This is the section currently in view (or closest to center)
+                // Let's refine this to find the section whose middle is closest to the viewport middle
+                const viewportMiddle = window.innerHeight / 2;
+                const distanceToMiddle = Math.abs(sectionMiddle - viewportMiddle);
+
+                if (distanceToMiddle < closestSectionTop) { // Use distanceToMiddle here
+                     closestSectionTop = distanceToMiddle; // Update closest distance
+                     currentSectionId = section.id;
+                }
+            // }
         }
     });
 
-    // Determine which position array to use based on screen width
-    const isMobile = window.innerWidth < 768; // Using 768px as the breakpoint
-    const activePositionArray = isMobile ? arrPositionModelMobile : arrPositionModel;
+    // If we're in the about section, lock the model to the mascot position
+    if (currentSectionId === 'about') {
+        const mascotElement = document.querySelector('.lemon-mascot');
+        if (mascotElement && modelGroup) {
+            const rect = mascotElement.getBoundingClientRect();
+            const mascotCenterX = rect.left + rect.width / 2;
+            const mascotCenterY = rect.top + rect.height / 2;
 
-    // Ensure we have a valid section ID, fallback to 'hero' if needed
-    const foundSection = activePositionArray.find(val => val.id === currentSectionId);
-     if (!foundSection) {
-         currentSectionId = 'hero';
-     }
+            const vector = new THREE.Vector3();
+            vector.x = (mascotCenterX / window.innerWidth) * 2 - 1;
+            vector.y = -(mascotCenterY / window.innerHeight) * 2 + 1;
+            vector.z = 0.5; // Adjust Z for desired depth relative to mascot
 
-    let position_active_index = activePositionArray.findIndex(
-        (val) => val.id === currentSectionId
-    );
+            vector.unproject(camera);
+            const dir = vector.sub(camera.position).normalize();
+            // Calculate distance to a plane that contains the mascot's screen position
+            // A simpler approach is to find where the ray intersects a plane at the mascot's Z depth
+            // This might require getting the mascot's 3D world position, which is tricky with 2D elements
+            // Let's use the previous approach which seemed to work for locking initially
+            const distance = -camera.position.z / dir.z;
+            const pos = camera.position.clone().add(dir.multiplyScalar(distance));
 
-    if (position_active_index >= 0) {
-        let new_coordinates = activePositionArray[position_active_index];
+            // Animate to the locked position for smoothness
+            gsap.to(modelGroup.position, {
+                x: pos.x,
+                y: pos.y,
+                z: pos.z,
+                duration: 0.8, // Animation duration
+                ease: "power2.out"
+            });
+            gsap.to(modelGroup.rotation, {
+                 x: 0, y: 0, z: 0,
+                 duration: 0.8,
+                 ease: "power2.out"
+            });
+            gsap.to(modelGroup.scale, {
+                 x: 5, y: 5, z: 5,
+                 duration: 0.8,
+                 ease: "power2.out"
+            });
 
-        // Add small random variations to target position and rotation
-        const randomIntensity = 0.5; // Adjust this value to control the amount of randomness
-        const targetPosition = {
-            x: new_coordinates.position.x + (Math.random() - 0.5) * randomIntensity,
-            y: new_coordinates.position.y + (Math.random() - 0.5) * randomIntensity,
-            z: new_coordinates.position.z + (Math.random() - 0.5) * randomIntensity
-        };
-        const targetRotation = {
-            x: new_coordinates.rotation.x + (Math.random() - 0.5) * randomIntensity * 0.5, // Reduced random rotation
-            y: new_coordinates.rotation.y + (Math.random() - 0.5) * randomIntensity * 0.5, // Reduced random rotation
-            z: new_coordinates.rotation.z + (Math.random() - 0.5) * randomIntensity * 0.5  // Reduced random rotation
-        };
-
-        // Apply GSAP tweens to the model group
-        gsap.to(modelGroup.position, {
-            x: targetPosition.x,
-            y: targetPosition.y,
-            z: targetPosition.z,
-            duration: 1.5, // Increased duration for smoother animation
-            ease: "back.inOut(1.2)" // Funky and smooth ease for position
-        });
-        gsap.to(modelGroup.rotation, {
-            x: targetRotation.x,
-            y: targetRotation.y,
-            z: targetRotation.z,
-            duration: 1.5, // Increased duration for smoother animation
-            ease: "back.inOut(1.2)" // Unified ease with less overshoot for smoother rotation
-        });
-        // Add GSAP tween for scale
-        gsap.to(modelGroup.scale, {
-            x: new_coordinates.scale.x + (Math.random() - 0.5) * randomIntensity * 0.2, // Add small random scale variation
-            y: new_coordinates.scale.y + (Math.random() - 0.5) * randomIntensity * 0.2, // Add small random scale variation
-            z: new_coordinates.scale.z + (Math.random() - 0.5) * randomIntensity * 0.2, // Add small random scale variation
-            duration: 1.5, // Increased duration for smoother animation
-            ease: "back.inOut(1.7)" // Funky and smooth ease for scale
-        });
-        // console.log('Model rotation after modelMove:', bee.rotation); // Log rotation after modelMove
+            // Disable mouse follow effect while in about section
+            targetRotationY = 0;
+            targetRotationX = 0;
+            // No return here, allow mouse follow updates if needed (though setting targets to 0)
+        }
     } else {
-        console.log('No position defined for section:', currentSectionId);
+        // Normal movement for other sections using the position arrays
+        const isMobile = window.innerWidth < 768;
+        const activePositionArray = isMobile ? arrPositionModelMobile : arrPositionModel;
+        const foundSection = activePositionArray.find(val => val.id === currentSectionId);
+        
+        if (foundSection && modelGroup) {
+            const randomIntensity = 0.5; // Keep random intensity
+            const targetPosition = {
+                x: foundSection.position.x + (Math.random() - 0.5) * randomIntensity,
+                y: foundSection.position.y + (Math.random() - 0.5) * randomIntensity,
+                z: foundSection.position.z + (Math.random() - 0.5) * randomIntensity
+            };
+            const targetRotation = {
+                x: foundSection.rotation.x + (Math.random() - 0.5) * randomIntensity * 0.5,
+                y: foundSection.rotation.y + (Math.random() - 0.5) * randomIntensity * 0.5,
+                z: foundSection.rotation.z + (Math.random() - 0.5) * randomIntensity * 0.5
+            };
+            const targetScale = {
+                 x: foundSection.scale.x + (Math.random() - 0.5) * randomIntensity * 0.2,
+                 y: foundSection.scale.y + (Math.random() - 0.5) * randomIntensity * 0.2,
+                 z: foundSection.scale.z + (Math.random() - 0.5) * randomIntensity * 0.2
+            };
+
+            // Animate to the target position, rotation, and scale
+            gsap.to(modelGroup.position, {
+                x: targetPosition.x,
+                y: targetPosition.y,
+                z: targetPosition.z,
+                duration: 1.5,
+                ease: "back.inOut(1.2)"
+            });
+            gsap.to(modelGroup.rotation, {
+                x: targetRotation.x,
+                y: targetRotation.y,
+                z: targetRotation.z,
+                duration: 1.5,
+                ease: "back.inOut(1.2)"
+            });
+            gsap.to(modelGroup.scale, {
+                 x: targetScale.x,
+                 y: targetScale.y,
+                 z: targetScale.z,
+                 duration: 1.5,
+                 ease: "back.inOut(1.7)"
+            });
+            
+            // Mouse follow remains active in other sections
+        }
     }
 }
+
+// Add scroll event listener
 window.addEventListener('scroll', () => {
     if (modelGroup) { // Ensure group is loaded before trying to move it
         modelMove();
     }
-})
+});
+
+// Add mousemove event listener
+document.addEventListener('mousemove', (event) => {
+    // Only apply mouse follow if not in the about section
+     const aboutSection = document.getElementById('about');
+     if (aboutSection && !isInViewport(aboutSection)) {
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        targetRotationY = mouseX * 0.5;
+        targetRotationX = mouseY * -0.5;
+     } else {
+        // Reset target rotation when in about section to prevent sudden snaps when leaving
+        targetRotationY = 0;
+        targetRotationX = 0;
+     }
+});
+
+const reRender3D = () => {
+    requestAnimationFrame(reRender3D);
+    renderer.render(scene, camera);
+    
+    if(mixer) mixer.update(0.02);
+
+    // Apply damping for mouse follow effect only if not in about section
+     const aboutSection = document.getElementById('about');
+     if (modelGroup && aboutSection && !isInViewport(aboutSection)) {
+        const dampingFactor = 0.05;
+        modelGroup.rotation.y += (targetRotationY - modelGroup.rotation.y) * dampingFactor;
+        modelGroup.rotation.x += (targetRotationX - modelGroup.rotation.x) * dampingFactor;
+     }
+};
+
+reRender3D();
+
+// Handle window resize
 window.addEventListener('resize', () => {
-    // Use window dimensions for resizing again
     const container = document.getElementById('container3D');
     if (container) {
         renderer.setSize(container.clientWidth, container.clientHeight);
         camera.aspect = container.clientWidth / container.clientHeight;
     }
     camera.updateProjectionMatrix();
-    // Continuous rendering is active, no need to re-render here
-    // reRender3D();
-})
+});
